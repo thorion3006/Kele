@@ -27,4 +27,27 @@ class Kele
     response = self.class.get("/mentors/#{mentor_id}/student_availability", headers: { authorization: @auth_token })
     JSON.parse(response.body)
   end
+
+  def get_messages(page = nil)
+    values = {
+      page: page,
+      headers: { authorization: @auth_token }
+    }
+    response = self.class.get('/message_threads', values)
+    JSON.parse(response.body)
+  end
+
+  def create_message(options = {})
+    values = {
+      headers: { authorization: @auth_token },
+      body: {
+        sender: options[:sender],
+        recipient_id: options[:recipient_id],
+        token: options[:token],
+        subject: options[:subject],
+        'stripped-text' => options["stripped-text"]
+      }
+    }
+    self.class.post('/messages', values)
+  end
 end
